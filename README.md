@@ -14,7 +14,81 @@ npm start
 
 Open **http://127.0.0.1:4173**. Keep that terminal running; press `Ctrl+C` to stop. Serve the files over HTTP rather than opening `index.html` directly, because the application loads its data as JSON.
 
-All fonts, scripts and diagram data are stored locally. Original evidence links and the Miro links open external websites only when clicked. Nothing is deployed or published.
+All fonts, scripts and diagram data are stored locally. Original evidence links and the Miro links open external websites only when clicked.
+
+## GitHub Pages deployment
+
+The public repository uses GitHub Pages on GitHub Free. Pushing to `main` triggers
+automatic deployment through GitHub Actions. Repository visibility is not changed
+by the workflow.
+
+This is a static HTML/CSS/JavaScript/SVG site, not a framework application.
+`npm run build` validates JavaScript, JSON, and local asset references, then copies
+only `web/` to the ignored `_site/` directory, byte-for-byte, plus `.nojekyll`.
+No npm installation, bundler, new dependencies, or UI changes are required.
+The workbook, source SVG archive, scripts, Git metadata, and `.preview/` are not
+included in the deployed artifact. The existing downloadable diagram JSON,
+integrity report, fonts, and font licenses remain included.
+
+Production URL:
+**https://labyrinthchilioil.github.io/STU1504-PublicEducation/**
+
+The repository base path is **`/STU1504-PublicEducation/`**. Existing relative
+module, stylesheet, font, and data URLs resolve under that prefix. Navigation uses
+URL fragments, so refreshing a selected node or Discover view does not require
+a server-side route, SPA fallback, or custom `404.html`. External evidence and
+Miro links keep their original destinations.
+
+### Verify the production artifact locally
+
+With Node.js 24:
+
+```powershell
+npm run build
+npm run preview:pages
+```
+
+Open **http://127.0.0.1:4174/STU1504-PublicEducation/**. This serves `_site/`
+under the same path prefix as GitHub Pages; the normal `npm start` command still
+serves `web/` at port 4173. Use `Ctrl+C` to stop the preview.
+
+The deployment uses the committed JSON export. After changing workbook content,
+run `npm run export` and the existing `npm run check` before committing the
+updated JSON; Python/openpyxl are only needed for that existing export workflow.
+
+### GitHub settings
+
+1. **Plan and visibility:** this repository is already public and eligible for
+   GitHub Pages on GitHub Free. No visibility change is needed. The committed
+   workbook and source archive are public repository files, although they are
+   excluded from the deployed Pages artifact.
+2. **Settings → Actions → General → Actions permissions:** allow the official
+   GitHub-authored actions used by this workflow. No third-party actions are used.
+   The default **Workflow permissions** can remain **Read repository contents and
+   packages permissions**; the deployment job requests its own `pages: write`
+   and `id-token: write` permissions. No personal access token or custom secret
+   is required.
+3. **Settings → Pages → Build and deployment → Source:** select **GitHub Actions**.
+   Do not select a branch or `/docs` folder, and do not add a generated starter
+   workflow. Use the prepared `.github/workflows/pages.yml`.
+4. **Settings → Environments → github-pages:** once available, set
+   **Deployment branches and tags → Selected branches and tags** and allow the
+   `main` branch. Required reviewers are optional; enabling them means each
+   deployment waits for approval rather than publishing fully automatically.
+5. Leave **Custom domain** empty and keep **Enforce HTTPS** enabled when available.
+6. Push changes to `main`. In **Actions**,
+   open **Deploy to GitHub Pages** and check that both `build` and `deploy` succeed.
+   **Run workflow → main** can also trigger a deployment manually.
+
+Every push to `main` runs the existing diagram checks, rebuilds `_site/`, and
+deploys it using the built-in GitHub token. Actions are pinned to verified
+release commits. Deployment jobs are serialized, and manual runs on other
+branches are skipped. The workflow reads the manually enabled Pages settings;
+it does not automatically enable Pages or change repository visibility.
+
+References: [GitHub Pages plan eligibility](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages),
+[GitHub Actions publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site),
+[custom deployment workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
 ## Explore
 

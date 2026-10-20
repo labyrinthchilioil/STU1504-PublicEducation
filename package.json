@@ -6,6 +6,8 @@
   "description": "Interactive Frame 12 diagram generated from Frame12_Database.xlsx",
   "scripts": {
     "start": "node scripts/serve.mjs",
+    "build": "node scripts/build-pages.mjs",
+    "preview:pages": "node scripts/serve.mjs --pages",
     "export": "python scripts/export-data.py",
     "check": "node --check web/app.js && node --check web/graph.js && node --check web/glow.js && node --check web/folder-shape.js && node --check web/node-label.js && node --check web/node-codes.js && node --check web/node-ripple.js && node --check web/inspector-content.js && node --check web/regions.js && node --check web/routing.js && node --check web/layout.js && node --check web/landscape.js && node --check web/landscape-model.js && node --check web/landscape-transition.js && node --check web/spider-search.js && node --check web/spider-companion.js && node --check web/spider-highlights.js && python scripts/export-data.py && node scripts/routing-check.mjs && node scripts/layout-check.mjs && node scripts/landscape-check.mjs && node scripts/spider-search-check.mjs && node scripts/node-label-check.mjs && node scripts/inspector-content-check.mjs",
     "check:landscape": "node scripts/landscape-check.mjs",
