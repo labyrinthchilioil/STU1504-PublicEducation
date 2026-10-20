@@ -23,7 +23,7 @@ let overviewTransition = null;
 let spiderSearch, spiderCompanion, spiderResult = null, spiderTimer, spiderReadyTimer;
 let spiderComposing = false;
 let spiderResultsOpen = false;
-const activeGraph = () => currentView === 'influence' ? null : currentView === 'landscape' ? landscape : graph;
+const activeGraph = () => ['influence', 'definitions'].includes(currentView) ? null : currentView === 'landscape' ? landscape : graph;
 let regionMap = new Map();
 const regionForItem = item => regionMap.get(String(item.node_id || item.item_id));
 const viewNames = { all:'Overview', land:'Land Use', grid:'Grid', environment:'Environment', operation:'Operation' };
@@ -168,7 +168,7 @@ function clearSpiderQuery({ focus = false } = {}) {
 }
 function submitSpiderQuery() {
   clearTimeout(spiderTimer);
-  if (!spiderSearch || spiderComposing || overviewTransition || currentView === 'influence') return;
+  if (!spiderSearch || spiderComposing || overviewTransition || ['influence', 'definitions'].includes(currentView)) return;
   clearPublicInfluence();
   if (layoutMode) setLayoutEditing(false);
   if (!$('index-panel').hidden) toggleIndex(false);
@@ -186,6 +186,11 @@ function setTheme(theme) {
   try { localStorage.setItem('frame12-theme',selected); } catch { /* Theme remains usable without storage. */ }
 }
 function viewContext(selection = null) {
+  if (currentView === 'definitions') {
+    $('view-name').textContent = 'Definitions';
+    $('selection-summary').textContent = 'Public Participation Types & Key Differences';
+    return;
+  }
   if (currentView === 'influence') {
     $('view-name').textContent = 'Public Influence';
     $('selection-summary').textContent = selection || 'Participation, Access & Decision Authority';
@@ -204,6 +209,7 @@ function sourceLink(url, label = 'View original item in Miro ↗') {
 }
 function setHash(kind, id) {
   const params = new URLSearchParams();
+  if (currentView === 'definitions') params.set('view', 'definitions');
   if (currentView === 'influence') {
     params.set('view', 'influence');
     if (influenceEntry) {
@@ -333,6 +339,7 @@ function closeInspector({ restoreFocus = true } = {}) {
   if (restoreFocus && lastTrigger?.isConnected && lastTrigger !== document.body && !lastTrigger.closest('[hidden]')) lastTrigger.focus({ preventScroll:true });
 }
 function toggleIndex(open = $('index-panel').hidden) {
+  if (currentView === 'definitions') return;
   if (currentView === 'influence') { influenceAnalysis?.focusSearch(); return; }
   if (overviewTransition) cancelOverviewTransition();
   if (open) clearPublicInfluence();
@@ -429,23 +436,26 @@ function setView(view, { fromTransition = false } = {}) {
   spiderResultsOpen = false;
   const isLandscape = view === 'landscape';
   const isInfluence = view === 'influence';
+  const isDefinitions = view === 'definitions';
+  const isAnalysis = isInfluence || isDefinitions;
   const isDiagram = view === 'diagram';
   $('main').dataset.view = view;
   $('diagram-wrap').hidden = !isDiagram;
   $('landscape-panel').hidden = !isLandscape;
   $('influence-panel').hidden = !isInfluence;
+  $('definitions-panel').hidden = !isDefinitions;
   $('edit-layout').hidden = !isDiagram;
   $('overview-discover').hidden = !isDiagram;
   $('landscape-reset').hidden = !isLandscape;
   $('landscape-overview').hidden = !isLandscape;
   $('routing-note').hidden = !isDiagram;
-  $('index-button').hidden = isInfluence;
-  $('labels-toggle').hidden = isInfluence;
-  $('spider-dock').hidden = isInfluence;
-  document.querySelector('.map-controls').hidden = isInfluence;
+  $('index-button').hidden = isAnalysis;
+  $('labels-toggle').hidden = isAnalysis;
+  $('spider-dock').hidden = isAnalysis;
+  document.querySelector('.map-controls').hidden = isAnalysis;
   $('labels-toggle').setAttribute('aria-label', isLandscape ? 'Show node labels' : 'Show connection labels');
   $('labels-toggle').title = isLandscape ? 'Node Labels' : 'Connection Labels';
-  document.querySelector('.skip-link').href = isInfluence ? '#influence-panel' : isLandscape ? '#landscape-diagram' : '#diagram';
+  document.querySelector('.skip-link').href = isDefinitions ? '#definitions-panel' : isInfluence ? '#influence-panel' : isLandscape ? '#landscape-diagram' : '#diagram';
   if (isLandscape && !landscape) initializeLandscape();
   if (isInfluence) initializeInfluence();
   graph.setActive(isDiagram);
@@ -462,10 +472,13 @@ function setView(view, { fromTransition = false } = {}) {
   $('influence-button').classList.toggle('active', isInfluence);
   if (isInfluence) $('influence-button').setAttribute('aria-current', 'true');
   else $('influence-button').removeAttribute('aria-current');
+  $('definitions-button').classList.toggle('active', isDefinitions);
+  if (isDefinitions) $('definitions-button').setAttribute('aria-current', 'true');
+  else $('definitions-button').removeAttribute('aria-current');
   updateViewFooter();
   viewContext();
   setHash('', null);
-  if (!isInfluence) applySpiderResult();
+  if (!isAnalysis) applySpiderResult();
   else { clearTimeout(spiderTimer); clearTimeout(spiderReadyTimer); updateSpiderTether(); }
   updatePublicInfluence();
   requestAnimationFrame(() => { activeGraph()?.resize(); updateSpiderTether(); });
@@ -610,7 +623,9 @@ function initializeLandscape() {
   new ResizeObserver(() => { if (currentView === 'landscape') landscape.resize(); }).observe($('landscape-stage'));
 }
 function updateViewFooter() {
-  if (currentView === 'influence') {
+  if (currentView === 'definitions') {
+    document.querySelector('.map-footer > span').textContent = 'Public Participation · Definitions';
+  } else if (currentView === 'influence') {
     document.querySelector('.map-footer > span').textContent = 'Public Influence Analysis';
   } else if (currentView === 'landscape') {
     const inferred = $('landscape-inferred').checked ? landscapeModel.inferredEdges.length : 0;
@@ -894,7 +909,8 @@ async function navigateHash() {
   const params = new URLSearchParams(location.hash.slice(1));
   cancelOverviewTransition();
   closeInspector();
-  setView(['landscape', 'influence'].includes(params.get('view')) ? params.get('view') : 'diagram');
+  setView(['landscape', 'influence', 'definitions'].includes(params.get('view')) ? params.get('view') : 'diagram');
+  if (currentView === 'definitions') return;
   if (currentView === 'influence') {
     const revision = navigationRevision;
     await initializeInfluence();
@@ -915,7 +931,7 @@ async function navigateHash() {
 
 $('index-button').addEventListener('click',()=>toggleIndex()); $('close-index').addEventListener('click',()=>toggleIndex(false));
 document.querySelector('.skip-link').addEventListener('click', event => {
-  const target = currentView === 'influence' ? $('influence-panel') : currentView === 'landscape' ? $('landscape-diagram') : $('diagram');
+  const target = currentView === 'definitions' ? $('definitions-panel') : currentView === 'influence' ? $('influence-panel') : currentView === 'landscape' ? $('landscape-diagram') : $('diagram');
   event.preventDefault();
   target.focus({ preventScroll: true });
 });
@@ -962,6 +978,11 @@ $('fit-button').addEventListener('click',()=>currentView === 'landscape' ? lands
 $('labels-toggle').addEventListener('click',()=>{labelsVisible=!labelsVisible;$('labels-toggle').setAttribute('aria-pressed',String(labelsVisible));activeGraph()?.setLabelsVisible(labelsVisible);});
 $('landscape-button').addEventListener('click', () => setView('landscape'));
 $('influence-button').addEventListener('click', () => setView('influence'));
+$('definitions-button').addEventListener('click', () => setView('definitions'));
+$('definitions-explore').addEventListener('click', () => {
+  setView('influence');
+  $('influence-panel').focus({ preventScroll: true });
+});
 $('landscape-overview').addEventListener('click', untangleToOverview);
 $('overview-discover').addEventListener('click', untangleToDiscover);
 $('public-influence-toggle').addEventListener('click', togglePublicInfluence);
@@ -990,6 +1011,7 @@ document.addEventListener('keydown',event=>{
     return;
   }
   if ($('source-dialog').open || $('landscape-method-dialog').open) return;
+  if (currentView === 'definitions') return;
   if (currentView === 'influence') {
     if (event.key === 'Escape' && !$('inspector').hidden) closeInspector();
     if (event.key === '/' && !event.target.matches('input,textarea,select,[contenteditable=true]')) {

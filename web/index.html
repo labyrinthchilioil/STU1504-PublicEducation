@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="spider.css">
   <link rel="stylesheet" href="public-influence.css">
   <link rel="stylesheet" href="influence-analysis.css">
+  <link rel="stylesheet" href="definitions.css">
 </head>
 <body>
   <a class="skip-link" href="#diagram">Skip to diagram</a>
@@ -43,6 +44,7 @@
       <button class="rail-item" data-region="operation" aria-label="Focus construction, inspection, occupancy and operation"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 3 3 5-6"/></svg><span class="rail-label">Operation</span></button>
       <div class="rail-heading influence-rail-heading">Analyze</div>
       <button class="rail-item" id="influence-button" aria-label="Analyze Public Influence" aria-controls="influence-panel"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 2 4v2"/></svg><span class="rail-label">Public Influence</span></button>
+      <button class="rail-item" id="definitions-button" aria-label="Public Participation Definitions" aria-controls="definitions-panel"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5C8 2 4 3 2 4v15c3-1 7-1 10 2 3-3 7-3 10-2V4c-2-1-6-2-10 1Zm0 0v16M5 7l4 1M5 11l4 1m6-4 4-1m-4 5 4-1"/></svg><span class="rail-label">Definitions</span></button>
       <div class="rail-bottom"><div class="map-stats" aria-label="Diagram inventory"><span><b id="node-count">—</b> nodes</span><span><b id="edge-count">—</b> connections</span></div></div>
     </nav>
     <main class="map-area" id="main" data-view="diagram">
@@ -86,6 +88,36 @@
         <div class="landscape-stage" id="landscape-stage"><svg id="landscape-diagram" xmlns="http://www.w3.org/2000/svg" tabindex="0" role="group" aria-label="Community relationship network. Choose themes to cluster, drag nodes to move, drag the background to pan, and scroll to zoom."></svg><div class="landscape-legend" aria-label="Connection legend"><span><i></i>Source connection</span><span><i class="inferred"></i>Related by model</span><span class="landscape-size-note">Size = source connections</span></div></div>
       </section>
       <section id="influence-panel" class="influence-panel" aria-label="Public Influence Analysis" tabindex="-1" hidden></section>
+      <section id="definitions-panel" class="definitions-panel" aria-label="Public Participation Definitions" tabindex="-1" hidden>
+        <div class="definitions-page">
+          <header class="definitions-intro">
+            <p class="definitions-kicker">A Guide To Participation</p>
+            <h1>Understand Public Participation</h1>
+            <p>Five ways the public can engage with a project—and the differences in what each process allows.</p>
+          </header>
+          <section aria-labelledby="participation-types-heading">
+            <div class="definitions-section-heading"><h2 id="participation-types-heading">Public Participation Types</h2><span>5 Types</span></div>
+            <div class="definitions-list">
+              <article class="definition-card"><span class="definition-number" aria-hidden="true">01</span><div><h3>Comment / Consultation / Hearing / Stakeholder Input</h3><p><strong>Public Input:</strong> Residents can submit comments, attend public meetings, and express support or concerns, but usually have no final decision-making authority.</p></div></article>
+              <article class="definition-card"><span class="definition-number" aria-hidden="true">02</span><div><h3>Mixed DPU Participation</h3><p><strong>Regulatory Participation:</strong> The public can comment on relevant Massachusetts Department of Public Utilities (DPU) proceedings. Eligible individuals or groups may apply for formal intervenor status.</p></div></article>
+              <article class="definition-card"><span class="definition-number" aria-hidden="true">03</span><div><h3>Administrative / Judicial Challenge</h3><p><strong>Legal Challenge:</strong> Individuals or groups with legal standing may challenge approval decisions through administrative appeals or court proceedings, subject to strict eligibility requirements and deadlines.</p></div></article>
+              <article class="definition-card"><span class="definition-number" aria-hidden="true">04</span><div><h3>Community Negotiation</h3><p><strong>Community Negotiation:</strong> Residents and community organizations can negotiate with developers or government agencies to seek changes, such as noise reduction, environmental protections, or community benefits.</p></div></article>
+              <article class="definition-card"><span class="definition-number" aria-hidden="true">05</span><div><h3>Compliance Complaint / Reporting</h3><p><strong>Complaint &amp; Reporting:</strong> Residents can report suspected violations, such as excessive noise or pollution, and request regulatory investigation or enforcement.</p></div></article>
+            </div>
+          </section>
+          <section class="definitions-differences" aria-labelledby="participation-differences-heading">
+            <h2 id="participation-differences-heading">Key Differences In Public Influence</h2>
+            <dl>
+              <div><dt>Comment / Hearing</dt><dd>I can express my opinion, but I cannot directly make the decision.</dd></div>
+              <div><dt>DPU Participation</dt><dd>I can participate in regulatory proceedings, potentially with formal procedural rights.</dd></div>
+              <div><dt>Legal Challenge</dt><dd>I may be able to legally challenge a decision if I meet the eligibility requirements.</dd></div>
+              <div><dt>Community Negotiation</dt><dd>I can negotiate for changes to the project or its conditions.</dd></div>
+              <div><dt>Complaint / Reporting</dt><dd>I can report problems and potentially trigger regulatory investigation or enforcement.</dd></div>
+            </dl>
+          </section>
+          <section class="definitions-takeaway" aria-labelledby="participation-takeaway-heading"><h2 id="participation-takeaway-heading">Key Takeaway</h2><p><strong>Public participation is not the same as public decision-making power.</strong> Different processes give the public different levels and types of influence.</p><button id="definitions-explore" type="button">Explore Public Influence <span aria-hidden="true">↗</span></button></section>
+        </div>
+      </section>
       <div id="overview-transition-stage" class="overview-transition-stage" aria-hidden="true" hidden></div>
       <div id="overview-transition-status" class="overview-transition-status" role="status" aria-live="polite" hidden><span class="overview-transition-dot" aria-hidden="true"></span><span id="overview-transition-message">Untangling connections…</span><button id="cancel-overview-transition" aria-label="Cancel transition to Overview">Cancel</button></div>
       <div class="loading-state" id="loading-state"><span class="loading-ring"></span><p>Loading diagram…</p></div>
