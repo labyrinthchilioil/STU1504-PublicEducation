@@ -1,0 +1,299 @@
+{
+  "status": "passed",
+  "workbook_sha256": "fcb640f6956a16b756c5ebdc72bdca0a2f97044c352097bf26c34b35e79c69a5",
+  "counts": {
+    "nodes": 128,
+    "connections": 181,
+    "evidenceLinks": 144,
+    "canvasItems": 131,
+    "layout": 259,
+    "groups": 116,
+    "sidebarBlocks": 639,
+    "rawItems": 440,
+    "fidelity": 13,
+    "readme": 44
+  },
+  "node_shapes": {
+    "round_rectangle": 11,
+    "rectangle": 91,
+    "rhombus": 26
+  },
+  "connector_types": {
+    "straight": 93,
+    "elbowed": 79,
+    "curved": 9
+  },
+  "valid_endpoint_references": 362,
+  "explicit_node_note_pairs": 115,
+  "distinct_evidence_urls": 64,
+  "unresolved_visual_fidelity": [
+    {
+      "field_or_case": "Connector routes",
+      "status": "visual_reference_required",
+      "affected_count": 181,
+      "affected_ids_json": null,
+      "source_observation": "Every connector exports x1=0, y1=0, x2=1, y2=1. No actual path, bend points, or curve controls are supplied.",
+      "required_treatment": "Keep path fields empty. Obtain an original visual export to reproduce exact routes. Never render these placeholder coordinates as real geometry."
+    },
+    {
+      "field_or_case": "Connector label positions and typography",
+      "status": "visual_reference_required",
+      "affected_count": 105,
+      "affected_ids_json": null,
+      "source_observation": "Labels are supplied as text/HTML without position or label-specific font metadata.",
+      "required_treatment": "Retain exact wording. Match placement and typography against a visual export before claiming an exact replica."
+    },
+    {
+      "field_or_case": "Start attachment side",
+      "status": "not_exposed",
+      "affected_count": 10,
+      "affected_ids_json": "[\"3458764687769078388\",\"3458764687769078389\",\"3458764687769078390\",\"3458764687769078391\",\"3458764687769078392\",\"3458764687769078393\",\"3458764687770798669\",\"3458764687770798670\",\"3458764687770937318\",\"3458764687771448447\"]",
+      "source_observation": "No data-start-side attribute is supplied for these connectors.",
+      "required_treatment": "Leave start_side empty. The start node ID is still known."
+    },
+    {
+      "field_or_case": "End attachment side",
+      "status": "not_exposed",
+      "affected_count": 11,
+      "affected_ids_json": "[\"3458764687769078388\",\"3458764687769078389\",\"3458764687769078390\",\"3458764687769078391\",\"3458764687769078392\",\"3458764687769078393\",\"3458764687770798669\",\"3458764687770798670\",\"3458764687770937318\",\"3458764687771448448\",\"3458764687771448449\"]",
+      "source_observation": "No data-end-side attribute is supplied for these connectors.",
+      "required_treatment": "Leave end_side empty. The end node ID is still known."
+    },
+    {
+      "field_or_case": "Node border widths",
+      "status": "not_exposed",
+      "affected_count": 128,
+      "affected_ids_json": null,
+      "source_observation": "No text-bearing node exports stroke-width. Three empty background rectangles do export width=1.",
+      "required_treatment": "Do not claim an assumed border width is an original measured value. Preserve the blank source fields."
+    },
+    {
+      "field_or_case": "Corner radii, text padding, line spacing",
+      "status": "not_exposed",
+      "affected_count": null,
+      "affected_ids_json": null,
+      "source_observation": "Shape names and text properties are supplied, but exact corner radii, padding, and line spacing are not.",
+      "required_treatment": "Use original visual material to resolve details required for a pixel-accurate reproduction."
+    },
+    {
+      "field_or_case": "Stacking order",
+      "status": "not_exposed",
+      "affected_count": 440,
+      "affected_ids_json": null,
+      "source_observation": "Source order is available; a Miro z-order field is not supplied. Connectors appear after the frame group in the exported document.",
+      "required_treatment": "Treat source_order as extraction order. Do not describe it as independently verified Miro stacking order."
+    }
+  ],
+  "live_miro_comparison": {
+    "available": true,
+    "file": "source/miro-frame12.svg",
+    "sha256": "056aa383c4cf401d04cce39bc87827a2b39f0a6b361b8534f4cd2016ed867f04",
+    "item_count": 440,
+    "mismatches": []
+  },
+  "checks": [
+    {
+      "check": "Nodes: source row count",
+      "passed": true,
+      "expected": 128,
+      "actual": 128
+    },
+    {
+      "check": "Connections: source row count",
+      "passed": true,
+      "expected": 181,
+      "actual": 181
+    },
+    {
+      "check": "Evidence_Links: source row count",
+      "passed": true,
+      "expected": 144,
+      "actual": 144
+    },
+    {
+      "check": "Canvas_Items: source row count",
+      "passed": true,
+      "expected": 131,
+      "actual": 131
+    },
+    {
+      "check": "Layout: source row count",
+      "passed": true,
+      "expected": 259,
+      "actual": 259
+    },
+    {
+      "check": "Groups: source row count",
+      "passed": true,
+      "expected": 116,
+      "actual": 116
+    },
+    {
+      "check": "Sidebar_Blocks: source row count",
+      "passed": true,
+      "expected": 639,
+      "actual": 639
+    },
+    {
+      "check": "Raw_Items: source row count",
+      "passed": true,
+      "expected": 440,
+      "actual": 440
+    },
+    {
+      "check": "Fidelity: source row count",
+      "passed": true,
+      "expected": 13,
+      "actual": 13
+    },
+    {
+      "check": "ReadMe: source row count",
+      "passed": true,
+      "expected": 44,
+      "actual": 44
+    },
+    {
+      "check": "Nodes: unique node_id",
+      "passed": true,
+      "actual": 128
+    },
+    {
+      "check": "Connections: unique connection_id",
+      "passed": true,
+      "actual": 181
+    },
+    {
+      "check": "Layout: unique item_id",
+      "passed": true,
+      "actual": 259
+    },
+    {
+      "check": "Canvas_Items: unique item_id",
+      "passed": true,
+      "actual": 131
+    },
+    {
+      "check": "Raw_Items: unique item_id",
+      "passed": true,
+      "actual": 440
+    },
+    {
+      "check": "Groups: unique group_id",
+      "passed": true,
+      "actual": 116
+    },
+    {
+      "check": "Sidebar_Blocks: unique block_id",
+      "passed": true,
+      "actual": 639
+    },
+    {
+      "check": "Evidence_Links: unique link_id",
+      "passed": true,
+      "actual": 144
+    },
+    {
+      "check": "Raw archive exactly covers nodes, connectors and canvas items",
+      "passed": true
+    },
+    {
+      "check": "Layout exactly covers every non-connector item",
+      "passed": true
+    },
+    {
+      "check": "All 362 connector endpoints reference source nodes",
+      "passed": true,
+      "actual": 362
+    },
+    {
+      "check": "All connector directions are start to end",
+      "passed": true
+    },
+    {
+      "check": "Missing routes and label positions remain absent",
+      "passed": true
+    },
+    {
+      "check": "All fixed geometry values are present and numeric",
+      "passed": true
+    },
+    {
+      "check": "Node labels preserve source HTML",
+      "passed": true
+    },
+    {
+      "check": "Canvas items preserve source HTML",
+      "passed": true
+    },
+    {
+      "check": "Connection labels preserve source HTML",
+      "passed": true
+    },
+    {
+      "check": "All 259 item geometries match source attributes",
+      "passed": true,
+      "actual": 259,
+      "numeric_tolerance": 1e-09
+    },
+    {
+      "check": "All 259 typography, rotation and border width records match source",
+      "passed": true,
+      "actual": 259
+    },
+    {
+      "check": "All 128 node shapes and colors match source",
+      "passed": true,
+      "actual": 128
+    },
+    {
+      "check": "All 181 connector styles, directions and attachment IDs match source",
+      "passed": true,
+      "actual": 181
+    },
+    {
+      "check": "All 115 node-note associations match explicit groups",
+      "passed": true,
+      "actual": 115
+    },
+    {
+      "check": "Sidebar fragments reconstruct all 115 original notes exactly",
+      "passed": true,
+      "actual": 115
+    },
+    {
+      "check": "All 512 node section text values match their sidebar blocks",
+      "passed": true,
+      "actual": 512
+    },
+    {
+      "check": "All 144 link fragments match exact original HTML offsets",
+      "passed": true,
+      "actual": 144
+    },
+    {
+      "check": "All 144 link occurrences retain exact source ownership",
+      "passed": true,
+      "actual": 144
+    },
+    {
+      "check": "13 nodes without grouped notes retain empty sections",
+      "passed": true,
+      "actual": 13
+    },
+    {
+      "check": "Two standalone notes remain unassigned",
+      "passed": true
+    },
+    {
+      "check": "Live Miro export item IDs match all 440 archived items",
+      "passed": true,
+      "actual": 440
+    },
+    {
+      "check": "Live Miro export attributes and authored HTML match workbook",
+      "passed": true,
+      "mismatches": []
+    }
+  ],
+  "errors": []
+}

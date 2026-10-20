@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import { INSPECTOR_SECTION_ORDER, sectionHeadingPrefixLength } from '../web/inspector-content.js';
+
+const cleaned = (text, section) => text.slice(sectionHeadingPrefixLength(text, section));
+assert.deepEqual(INSPECTOR_SECTION_ORDER, ['Description', 'Public Influence', 'Evidence', 'Time Scope']);
+assert.equal(cleaned('Evidence: State Guide Retained', 'Evidence'), 'State Guide Retained');
+assert.equal(cleaned(' \nEvidence:\u00a0Boston Zoning Code', 'Evidence'), 'Boston Zoning Code');
+assert.equal(cleaned('Public Influence:1. When can I influence?', 'Public Influence'), '1. When can I influence?');
+assert.equal(cleaned('Publice Influence: ', 'Public Influence'), '');
+assert.equal(cleaned('PUBLIC  INFLUENCE:', 'Public Influence'), '');
+assert.equal(cleaned('Time Scope: 30 days', 'Time Scope'), '30 days');
+assert.equal(cleaned('Description', 'Description'), '');
+assert.equal(cleaned('Evidence shows how review works.', 'Evidence'), 'Evidence shows how review works.');
+assert.equal(cleaned('Public Influence matters in this review.', 'Public Influence'), 'Public Influence matters in this review.');
+assert.equal(cleaned('BOS / APPLICANT:', 'Description'), 'BOS / APPLICANT:');
+assert.equal(cleaned('UTILITY:', 'Description'), 'UTILITY:');
+assert.equal(cleaned('Time Scope: 30 days', 'Evidence'), 'Time Scope: 30 days');
+assert.equal(sectionHeadingPrefixLength(null, 'Evidence'), 0);
+assert.equal(sectionHeadingPrefixLength('A .*: Keep this', 'A .*'), 0);
+console.log('Inspector content checks passed: section order, heading-only blocks, source spelling, inline content, and meaningful role labels.');

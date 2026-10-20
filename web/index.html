@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" data-theme="paper">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="description" content="Tracing data center approvals, infrastructure requirements, and public influence in Boston, Massachusetts.">
+  <meta name="author" content="Jingyi Zoe Liu">
+  <title>STU1504 | BOSTON DATA CENTER DECISION MAPPING — Who Decides What Gets Built?</title>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('frame12-theme')==='night'?'night':'paper'}catch{}</script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="landscape.css">
+  <link rel="stylesheet" href="spider.css">
+  <link rel="stylesheet" href="public-influence.css">
+</head>
+<body>
+  <a class="skip-link" href="#diagram">Skip to diagram</a>
+  <header class="masthead">
+    <div class="brand-lockup">
+      <a class="brand" href="./" aria-label="STU1504 | Boston Data Center Decision Mapping home"><span class="brand-type">STU1504 | BOSTON DATA CENTER DECISION MAPPING</span></a>
+      <span class="brand-author">Jingyi Zoe Liu</span>
+    </div>
+    <div class="header-actions">
+      <div class="theme-switch" role="group" aria-label="Appearance">
+        <button id="theme-paper" aria-label="Light appearance" aria-pressed="true" title="Light appearance"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span class="theme-label">Light</span></button>
+        <button id="theme-night" aria-label="Dark appearance" aria-pressed="false" title="Dark appearance"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a8.2 8.2 0 0 1-10-10 8.3 8.3 0 1 0 10 10Z"/></svg><span class="theme-label">Dark</span></button>
+      </div>
+      <button class="text-button" id="source-button" aria-label="Source information"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v6m0-10v.1"/></svg><span class="button-label">Source</span></button>
+      <a class="source-link" href="https://miro.com/app/board/uXjVEeateeQ=/?moveToWidget=3458764686135623201" target="_blank" rel="noopener noreferrer">Open Miro <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+  </header>
+  <div class="workspace">
+    <nav class="rail" aria-label="Diagram navigation">
+      <div class="rail-intro"><h1>Who Decides What Gets Built?</h1><p>Tracing data center approvals, infrastructure requirements, and public influence in Boston, Massachusetts.</p></div>
+      <div class="rail-heading landscape-rail-heading">Discover</div>
+      <button class="rail-item" id="landscape-button" aria-label="Explore the community landscape" aria-controls="landscape-panel"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 3M6 6l3 12m9-9-9 9"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="9" r="3"/><circle cx="9" cy="18" r="3"/></svg><span class="rail-label">Landscape</span></button>
+      <div class="rail-heading explore-rail-heading">Explore</div>
+      <button class="rail-item active" data-region="all" aria-label="Fit entire Frame 12" aria-current="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="rail-label">Overview</span></button>
+      <button class="rail-item" data-region="land" aria-label="Focus Boston land use"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Zm6-2v16m6-14v16"/></svg><span class="rail-label">Land Use</span></button>
+      <button class="rail-item" data-region="grid" aria-label="Focus Boston grid interconnection"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg><span class="rail-label">Grid</span></button>
+      <button class="rail-item" data-region="environment" aria-label="Focus Boston environment impacts"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 3.5C11 2 4 6 4 12a7 7 0 0 0 7 7c6 0 10-7 8.5-15.5ZM3 21 15 9"/></svg><span class="rail-label">Environment</span></button>
+      <button class="rail-item" data-region="operation" aria-label="Focus construction, inspection, occupancy and operation"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 3 3 5-6"/></svg><span class="rail-label">Operation</span></button>
+      <div class="rail-bottom"><div class="map-stats" aria-label="Diagram inventory"><span><b id="node-count">—</b> nodes</span><span><b id="edge-count">—</b> connections</span></div></div>
+    </nav>
+    <main class="map-area" id="main" data-view="diagram">
+      <div class="map-toolbar">
+        <div class="view-context"><span id="view-name">Overview</span><span id="selection-summary">All nodes</span></div>
+        <div class="toolbar-actions">
+          <button id="index-button" class="index-toggle" aria-label="Find a node or connection" aria-expanded="false" aria-controls="index-panel"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>Search Diagram</span><kbd>/</kbd></button>
+          <button id="edit-layout" class="edit-layout-button" aria-label="Edit diagram layout" aria-pressed="false" aria-controls="layout-tools" title="Edit Layout"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 4 4M4 20l4-1 12-12a2.8 2.8 0 0 0-4-4L4 15Zm0 0 4-1"/></svg><span class="button-label">Edit Layout</span></button>
+          <button id="landscape-reset" class="landscape-reset" aria-label="Reset View" title="Reset View — clear all topics and return to the free network" hidden><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg><span class="button-label">Reset View</span></button>
+          <button class="labels-toggle" id="labels-toggle" aria-pressed="true" aria-label="Show connection labels" title="Connection Labels"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M12 6v13M8 19h8M5 6v3m14-3v3"/></svg><span class="button-label">Labels</span></button>
+          <button id="overview-discover" class="landscape-overview overview-discover" aria-label="Untangle To Discover" aria-controls="landscape-panel" title="Untangle To Discover — watch the flowchart unfold into a network"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c6 0 5 14 11 14h7M3 19C9 19 8 5 14 5h7M3 12h18m-4-4 4 4-4 4"/></svg><span>Untangle To Discover</span></button>
+          <button id="landscape-overview" class="landscape-overview" aria-label="Untangle To Overview" aria-controls="diagram-wrap" title="Untangle To Overview — watch the network unfold into the Overview layout" hidden><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c6 0 5 14 11 14h7M3 19C9 19 8 5 14 5h7M3 12h18m-4-4 4 4-4 4"/></svg><span>Untangle To Overview</span></button>
+        </div>
+      </div>
+      <div class="public-influence-tools" id="public-influence-tools" hidden>
+        <button id="public-influence-toggle" class="public-influence-toggle" type="button" aria-pressed="false" aria-controls="diagram" title="Highlight the Public Influence nodes marked red in the database">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v2"/></svg>
+          <span>Public Influence</span><span class="public-influence-count" id="public-influence-count">0</span>
+          <svg class="ui-icon public-influence-check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4 10-10"/></svg>
+        </button>
+      </div>
+      <div class="layout-tools" id="layout-tools" aria-label="Layout editing controls" hidden>
+        <div class="layout-history"><button id="layout-undo" aria-label="Undo layout change" title="Undo (Ctrl / Cmd Z)" disabled><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 3 10l5 5M3 10h11a6 6 0 0 1 0 12" transform="translate(1 -2)"/></svg></button><button id="layout-redo" aria-label="Redo layout change" title="Redo (Ctrl / Cmd Shift Z)" disabled><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 5 5 5-5 5m5-5H10a6 6 0 0 0 0 12" transform="translate(-1 -2)"/></svg></button></div>
+        <span class="layout-divider" aria-hidden="true"></span><button id="layout-reset" class="layout-reset" aria-label="Restore original layout" title="Restore original layout; this can be undone" disabled>Reset</button>
+        <span id="layout-status" role="status" aria-live="polite">Drag nodes or lines - Snap to grid</span>
+      </div>
+      <section class="index-panel floating-panel" id="index-panel" aria-label="Search the diagram" hidden>
+        <div class="panel-top"><span class="eyebrow">Search Diagram</span><button class="icon-button" id="close-index" aria-label="Close diagram index">×</button></div>
+        <label class="search-field"><span class="sr-only">Search labels, IDs and original notes</span><input id="search-input" type="search" placeholder="Search labels, IDs, notes…" autocomplete="off"></label>
+        <div class="index-tabs" role="tablist" aria-label="Search type"><button id="nodes-tab" role="tab" aria-selected="true" aria-controls="search-results">Nodes <span>128</span></button><button id="connections-tab" role="tab" aria-selected="false" aria-controls="search-results">Connections <span>181</span></button></div>
+        <div class="result-count" id="result-count" aria-live="polite"></div>
+        <div class="search-results" id="search-results" role="tabpanel" aria-labelledby="nodes-tab"></div>
+      </section>
+      <div class="diagram-wrap" id="diagram-wrap"><svg id="diagram" xmlns="http://www.w3.org/2000/svg" tabindex="0" role="group" aria-label="Frame 12 interactive diagram. Drag to pan, scroll to zoom, and select a node to read its source notes."></svg></div>
+      <section class="landscape-panel" id="landscape-panel" aria-label="Network Lenses" hidden>
+        <div class="landscape-explore">
+          <div class="landscape-heading"><p>Select themes to organize connections.</p></div>
+          <div class="landscape-topics" id="landscape-topics" role="group" aria-label="Cluster by themes. Select one or more."></div>
+          <div class="landscape-options"><span id="landscape-status" role="status" aria-live="polite">Free network · Select one or more lenses</span><div><label class="landscape-toggle"><input id="landscape-inferred" type="checkbox" checked>Show Related Links</label><button id="landscape-method">How It Works <span aria-hidden="true">↗</span></button></div></div>
+        </div>
+        <div class="landscape-stage" id="landscape-stage"><svg id="landscape-diagram" xmlns="http://www.w3.org/2000/svg" tabindex="0" role="group" aria-label="Community relationship network. Choose themes to cluster, drag nodes to move, drag the background to pan, and scroll to zoom."></svg><div class="landscape-legend" aria-label="Connection legend"><span><i></i>Source connection</span><span><i class="inferred"></i>Related by model</span><span class="landscape-size-note">Size = source connections</span></div></div>
+      </section>
+      <div id="overview-transition-stage" class="overview-transition-stage" aria-hidden="true" hidden></div>
+      <div id="overview-transition-status" class="overview-transition-status" role="status" aria-live="polite" hidden><span class="overview-transition-dot" aria-hidden="true"></span><span id="overview-transition-message">Untangling connections…</span><button id="cancel-overview-transition" aria-label="Cancel transition to Overview">Cancel</button></div>
+      <div class="loading-state" id="loading-state"><span class="loading-ring"></span><p>Loading Frame 12…</p></div>
+      <div class="canvas-caption" id="canvas-caption"><p>Select a node to read its original notes.</p></div>
+      <aside class="inspector floating-panel" id="inspector" aria-label="Selected diagram item" hidden><div class="inspector-scroll" id="inspector-content"></div><button class="icon-button inspector-close" id="close-inspector" aria-label="Close details">×</button></aside>
+      <svg id="spider-tether" aria-hidden="true" hidden><path class="spider-tether-line" fill="none"/></svg>
+      <section id="spider-dock" aria-label="Explore with the spider" data-mode="diagram" data-spider-state="idle" hidden>
+        <div id="spider-pet" aria-hidden="true"></div>
+        <div class="spider-shell">
+          <form id="spider-form" role="search" aria-label="Find related ideas">
+            <label for="spider-input" class="sr-only">A word or question about this system</label>
+            <input id="spider-input" type="search" maxlength="300" autocomplete="off" placeholder="Find connections…" aria-describedby="spider-status">
+            <button id="spider-clear" type="button" aria-label="Clear query and release nodes" title="Clear and release" hidden>×</button>
+            <button id="spider-submit" type="submit" aria-label="Find related nodes" title="Find connections"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          </form>
+          <div class="spider-meta">
+            <div id="spider-status" role="status" aria-live="polite">Try “hearing” or “water”.</div>
+            <button id="spider-results-toggle" type="button" aria-controls="spider-results" aria-expanded="false" hidden>View notes</button>
+          </div>
+          <div id="spider-results" aria-label="Matching source notes" hidden></div>
+        </div>
+      </section>
+      <div class="map-controls" aria-label="Diagram controls"><button id="zoom-out" aria-label="Zoom out">−</button><output id="zoom-level" aria-label="Zoom level">100%</output><button id="zoom-in" aria-label="Zoom in">+</button><span class="control-divider"></span><button class="fit-button" id="fit-button" aria-label="Fit entire diagram">Fit</button></div>
+      <div class="map-footer"><span>Fixed source layout</span><button id="routing-note">Connection routes are approximate <span aria-hidden="true">ⓘ</span></button></div>
+      <div class="sr-only" id="live-status" aria-live="polite"></div>
+    </main>
+  </div>
+  <dialog id="source-dialog" aria-labelledby="source-dialog-title"><div class="dialog-header"><span class="eyebrow">Source & reproduction</span><button class="icon-button" id="close-source" aria-label="Close source information">×</button></div><h1 id="source-dialog-title">Frame 12</h1><p class="source-title">12 BOSTON INTEGRATED | City decisions, Eversource and labeled state requirements</p><dl class="source-counts"><div><dt>Nodes</dt><dd>128</dd></div><div><dt>Connections</dt><dd>181</dd></div><div><dt>Grouped notes</dt><dd>115</dd></div></dl><h2>Original content</h2><p>Labels, notes, evidence links, node positions, shapes and recorded colors come from <strong>Frame12_Database.xlsx</strong>. Nodes and connections use four section colors on white or graphite surfaces. Cross-section connections follow their source node's section, or the destination section when the source is ungrouped. Original colors remain recorded in the source data. Notes appear only under their explicitly grouped node. Empty sections are omitted.</p><h2>Local layout</h2><p>Edit layout lets you move nodes and line segments with grid snapping. Changes are saved on this device. Reset restores the original layout; Undo and Redo apply to layout changes. Source text, node identities and connection direction remain unchanged.</p><h2>Connection geometry</h2><p>The source provides endpoints, direction, line type, color and text, but does not provide the original paths, bends or label positions. Displayed routes use separate attachment points and staggered lanes to avoid overlapping lines. All recorded curves are displayed as elbowed lines for a consistent style; recorded styles remain in the source data. Routes and label placement are approximations. An original visual export is needed to match them exactly.</p><p class="source-small">Unspecified font metrics, corner radii, border widths and stacking use display defaults. Evidence links are reproduced from the source; their content has not been independently verified.</p><div class="dialog-links"><a href="https://miro.com/app/board/uXjVEeateeQ=/?moveToWidget=3458764686135623201" target="_blank" rel="noopener noreferrer">Original Miro frame ↗</a><a href="data/integrity.json" target="_blank" rel="noopener noreferrer">Data verification ↗</a><a href="data/frame12.json" download>Download source data ↓</a></div></dialog>
+  <dialog id="landscape-method-dialog" aria-labelledby="landscape-method-title"><div class="dialog-header"><span class="eyebrow">Reading the landscape</span><button class="icon-button" id="close-landscape-method" aria-label="Close landscape explanation">×</button></div><h1 id="landscape-method-title">One system. Many lenses.</h1><p>Start with a freely arranged network, then select any combination of broad themes to bring related nodes together. Every source node stays in view; nodes without a match remain around the outside.</p><h2>What the lines mean</h2><p>Solid arrows retain the workbook’s original connections and direction. Dashed lines are suggested similarities calculated for this view, not additional recorded relationships. Circle size reflects the number of original connections.</p><h2>How themes are assigned</h2><p id="landscape-theme-method"></p><h2>How related links are calculated</h2><p class="landscape-formula">R = 0.60T + 0.30N + 0.10S</p><p id="landscape-edge-method"></p><h2>How clustering works</h2><p id="landscape-cluster-method"></p><p class="source-small">This is an explainable rule-based exploration, not an AI embedding or a measure of causal influence. Select a node to inspect its topic scores and evidence alongside its original notes.</p></dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
