@@ -1,0 +1,162 @@
+/* Public Influence uses the same chrome, type, and source-region colors as the map. */
+.influence-rail-heading {margin-top:25px}
+#influence-button .ui-icon {color:var(--signal)}
+.map-area[data-view=influence] .canvas-caption {display:none}
+.influence-panel {
+  position:absolute;
+  inset:var(--toolbar) 0 var(--footer);
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line-strong) transparent;
+  background:var(--canvas);
+  container:influence / inline-size;
+}
+.influence-page {max-width:1300px;margin:0 auto;padding:30px 28px 34px}
+.influence-panel h1,.influence-panel h2,.influence-panel h3,.influence-panel p {margin:0}
+.influence-intro {display:flex;align-items:center;justify-content:space-between;gap:28px;margin-bottom:26px}
+.influence-intro-copy {max-width:560px;min-width:0}
+.influence-panel .influence-kicker {font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--signal);margin-bottom:10px}
+.influence-panel .influence-title {font-size:clamp(23px,2.1vw,30px);font-weight:650;line-height:1.2;letter-spacing:-.8px;text-wrap:balance}
+.influence-panel .influence-deck {font-size:13px;line-height:1.65;color:var(--muted);margin-top:11px;max-width:500px}
+.influence-statistics {display:flex;gap:0;margin:0;flex-shrink:0;padding:19px 0;border:1px solid var(--chrome-line);border-radius:18px;background:var(--chrome-panel);box-shadow:var(--chrome-shadow)}
+.influence-statistic {min-width:101px;padding:0 17px;text-align:center;display:flex;flex-direction:column}
+.influence-statistic+.influence-statistic {border-left:1px solid var(--chrome-line)}
+.influence-statistic dd {order:0;margin:0;font-size:32px;font-weight:650;line-height:1.05;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.influence-statistic dt {order:1;font-size:10px;font-weight:500;line-height:1.5;margin-top:7px;color:var(--muted);white-space:nowrap}
+.influence-charts {display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.influence-chart {min-width:0;padding:22px;border:1px solid var(--chrome-line);border-radius:18px;background:var(--chrome-panel);box-shadow:var(--chrome-shadow)}
+.influence-chart-heading,.influence-section-heading {display:flex;align-items:center;justify-content:space-between;gap:16px}
+.influence-chart-heading h2,.influence-section-heading h2 {font-size:17px;font-weight:650;line-height:1.35;letter-spacing:-.25px}
+.influence-chart-heading>.ui-icon {width:17px;height:17px;color:var(--muted)}
+.influence-unit {font-size:9px;line-height:1.3;color:var(--muted);text-align:right;flex-shrink:0}
+.influence-panel .influence-chart-description {color:var(--muted);font-size:11px;line-height:1.6;margin-top:7px;margin-bottom:15px}
+.influence-mechanism-list {display:flex;flex-direction:column;gap:3px}
+.influence-mechanism {display:block;width:100%;padding:9px 10px 10px;margin:0;text-align:left;border:1px solid transparent;border-radius:11px;transition:background .18s,border-color .18s}
+.influence-mechanism:hover {background:var(--field)}
+.influence-mechanism[aria-pressed=true] {background:color-mix(in srgb,var(--signal) 8%,var(--surface));border-color:color-mix(in srgb,var(--signal) 25%,var(--surface))}
+.influence-mechanism-label {display:flex;align-items:baseline;justify-content:space-between;gap:15px;font-size:12px;line-height:1.5;font-weight:500}
+.influence-mechanism-count {font-size:15px;line-height:1;font-weight:650;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.influence-mechanism-track {display:block;height:6px;border-radius:10px;background:var(--field);margin-top:8px;overflow:hidden}
+.influence-mechanism-fill {height:100%;display:block;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--signal) 48%,var(--surface)),var(--signal));transform-origin:left center;animation:influence-bar-reveal .5s ease both}
+.influence-mechanism[aria-pressed=true] .influence-mechanism-count {color:var(--signal)}
+.influence-mechanism:nth-child(2) .influence-mechanism-fill {animation-delay:.04s}
+.influence-mechanism:nth-child(3) .influence-mechanism-fill {animation-delay:.08s}
+.influence-mechanism:nth-child(4) .influence-mechanism-fill {animation-delay:.12s}
+.influence-mechanism:nth-child(5) .influence-mechanism-fill {animation-delay:.16s}
+.influence-mechanism-note {border-top:1px solid var(--chrome-line);margin-top:13px;padding:13px 10px 0;font-size:11px;line-height:1.65;color:var(--muted)}
+.influence-participation-tiers {margin-top:10px}
+.influence-participation-tiers summary {color:var(--ink);font-weight:600;cursor:pointer}
+.influence-participation-tiers ul {display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:10px 0}
+.influence-participation-tiers li {padding:3px 7px;border:1px solid var(--chrome-line);border-radius:6px;color:var(--ink);font-size:10px}
+.influence-inline-button {color:var(--accent);font-size:11px;padding:7px 0;text-decoration:underline;text-underline-offset:3px;border-radius:4px}
+.influence-inline-button:hover {background:transparent}
+.influence-domain-list {display:flex;flex-direction:column;gap:5px}
+.influence-domain {min-height:40px;width:100%;display:flex;align-items:center;gap:11px;padding:8px 10px;border:1px solid transparent;border-radius:10px;text-align:left}
+.influence-domain:hover {background:var(--field)}
+.influence-domain[aria-pressed=true] {background:color-mix(in srgb,var(--signal) 8%,var(--surface));border-color:color-mix(in srgb,var(--signal) 25%,var(--surface))}
+.influence-domain-marker {display:flex;flex-direction:column;gap:1px;height:22px;width:4px;flex-shrink:0;overflow:hidden;border-radius:3px}
+.influence-domain-marker i {display:block;width:4px;min-height:2px;background:var(--section-color,var(--line-strong))}
+.influence-domain-name {font-size:12px;line-height:1.4;flex:1;min-width:0}
+.influence-domain-count {font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;min-width:25px;height:25px;display:grid;place-items:center;border-radius:8px;background:var(--field)}
+.influence-domain[aria-pressed=true] .influence-domain-count {color:var(--signal)}
+.influence-panel .influence-count-note {font-size:10px;line-height:1.65;color:var(--muted);margin:12px 3px 28px;max-width:850px}
+.influence-records {padding-top:3px}
+.influence-results-count {font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.influence-filters {display:grid;grid-template-columns:minmax(210px,1.5fr) minmax(150px,1fr) minmax(150px,1fr);gap:9px;margin-top:17px}
+.influence-search {min-width:0;display:flex;align-items:center;gap:9px;padding:0 12px;height:40px;border:1px solid var(--chrome-line);border-radius:12px;background:var(--chrome-surface);box-shadow:var(--control-shadow)}
+.influence-search .ui-icon {width:15px;height:15px;color:var(--muted)}
+.influence-search input {min-width:0;width:100%;height:100%;padding:0;border:0;outline:0;background:none;font-size:12px}
+.influence-search input::placeholder {color:var(--muted)}
+.influence-search:focus-within {outline:2px solid var(--accent);outline-offset:2px}
+.influence-filter-select {min-width:0;width:100%;height:40px;padding:0 29px 0 12px;border:1px solid var(--chrome-line);border-radius:12px;background-color:var(--chrome-surface);color:var(--ink);font-family:var(--ui-font);font-size:11px;text-overflow:ellipsis;box-shadow:var(--control-shadow);cursor:pointer}
+.influence-filter-select:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+.influence-filter-summary {display:flex;align-items:baseline;justify-content:space-between;gap:16px;min-height:44px;padding:12px 2px 11px;font-size:10px;line-height:1.6;color:var(--muted)}
+.influence-clear-filters {padding:0;color:var(--accent);font-size:10px;white-space:nowrap;border-radius:4px}
+.influence-clear-filters:hover {background:none;text-decoration:underline;text-underline-offset:3px}
+.influence-node-list,.influence-supplementary-list {list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.influence-node-item,.influence-supplementary-item {min-width:0}
+.influence-node-card {--card-accent:var(--section-color,var(--signal));width:100%;height:100%;display:flex;flex-direction:column;align-items:stretch;gap:0;text-align:left;padding:17px 18px;border:1px solid var(--chrome-line);border-radius:15px;background:var(--chrome-panel);box-shadow:var(--chrome-shadow);position:relative;transition:background .18s,border-color .18s,box-shadow .18s}
+.influence-node-card:hover {background:color-mix(in srgb,var(--card-accent) 4%,var(--chrome-panel));border-color:color-mix(in srgb,var(--card-accent) 35%,var(--chrome-line));box-shadow:0 4px 15px color-mix(in srgb,var(--card-accent) 10%,transparent)}
+.influence-node-card.is-selected {background:color-mix(in srgb,var(--card-accent) 10%,var(--chrome-panel));border-color:color-mix(in srgb,var(--card-accent) 52%,var(--chrome-line));box-shadow:0 0 0 1px color-mix(in srgb,var(--card-accent) 14%,transparent),0 6px 19px color-mix(in srgb,var(--card-accent) 13%,transparent)}
+.influence-card-top {display:flex;align-items:center;gap:7px;min-width:0;margin-bottom:11px}
+.influence-folder {height:24px;width:26px;display:grid;place-items:center;border-radius:6px;background:color-mix(in srgb,var(--card-accent) 12%,var(--chrome-panel));color:var(--card-accent);flex-shrink:0}
+.influence-folder .ui-icon {width:17px;height:17px;stroke-width:1.45}
+.influence-node-code {font-size:10px;font-weight:650;letter-spacing:.025em;white-space:nowrap;color:var(--card-accent)}
+.influence-node-domain {font-size:9px;color:var(--muted);margin-left:3px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.influence-card-top>.ui-icon {width:14px;height:14px;margin-left:auto;color:var(--muted)}
+.influence-card-title {display:block;font-size:15px;font-weight:650;line-height:1.4;letter-spacing:-.2px;margin-bottom:8px;color:var(--ink)}
+.influence-card-action {font-size:12px;line-height:1.6;color:var(--ink)}
+.influence-card-access {font-size:11px;line-height:1.65;color:var(--muted);display:block;margin-top:9px;padding-top:9px;border-top:1px solid var(--chrome-line)}
+.influence-card-field-label {font-weight:600;color:var(--ink);margin-right:7px}
+.influence-empty {padding:36px 24px;text-align:center;border:1px dashed var(--line-strong);border-radius:15px;background:var(--chrome-panel)}
+.influence-empty>.ui-icon {width:23px;height:23px;margin:0 auto 13px;color:var(--muted)}
+.influence-empty h3 {font-size:16px;line-height:1.5;font-weight:650}
+.influence-empty p {font-size:12px;color:var(--muted);line-height:1.65;margin:7px auto 15px;max-width:360px}
+.influence-empty-reset {font-size:12px;padding:9px 13px;border:1px solid var(--chrome-line);border-radius:9px;background:var(--field)}
+.influence-supplementary {border-top:1px solid var(--line);margin-top:32px;padding-top:26px}
+.influence-supplementary-badge {padding:5px 8px;border:1px solid var(--chrome-line);border-radius:7px;color:var(--muted);font-size:9px;line-height:1.3;white-space:nowrap}
+.influence-panel .influence-supplementary-description {font-size:12px;line-height:1.7;color:var(--muted);margin:9px 0 17px;max-width:690px}
+.influence-supplementary-list {grid-template-columns:repeat(3,minmax(0,1fr))}
+.influence-supplementary-card {box-shadow:none}
+.influence-supplementary-card .influence-card-title {font-size:14px}
+.influence-source-treatment {font-size:10px;line-height:1.6;color:var(--muted);border-top:1px dashed var(--chrome-line);padding-top:9px;margin-top:11px}
+@media(min-width:701px) {
+  .map-area[data-view=influence]:has(#inspector:not([hidden])) .influence-panel {right:var(--inspector)}
+}
+@media(max-width:700px) {
+  .rail {overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+  .rail::-webkit-scrollbar {display:none}
+  .rail-item {flex:1 0 64px}
+  #influence-button {flex-basis:89px}
+  .map-area[data-view=influence]:has(#inspector:not([hidden])) .influence-panel {bottom:58%}
+}
+@container influence (max-width:1000px) {
+  .influence-page {padding:25px 22px 30px}
+  .influence-intro {gap:20px}
+  .influence-title {font-size:25px}
+  .influence-statistic {min-width:84px;padding:0 11px}
+  .influence-statistic dd {font-size:29px}
+  .influence-statistic dt {font-size:9px}
+  .influence-chart {padding:19px}
+  .influence-unit {display:none}
+  .influence-chart-heading h2 {font-size:16px}
+  .influence-charts {gap:14px}
+  .influence-node-list {grid-template-columns:1fr}
+  .influence-supplementary-list {grid-template-columns:1fr}
+  .influence-supplementary-card {padding:17px 18px}
+}
+@container influence (max-width:780px) {
+  .influence-intro {align-items:flex-start;flex-direction:column;gap:19px}
+  .influence-statistics {width:100%;padding:14px 0}
+  .influence-statistic {flex:1;min-width:0}
+  .influence-statistic dt {font-size:10px}
+  .influence-charts {grid-template-columns:1fr}
+  .influence-domain-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px}
+  .influence-filters {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .influence-search {grid-column:1/-1}
+  .influence-mechanism-note {padding-left:10px;padding-right:10px}
+}
+@container influence (max-width:430px) {
+  .influence-page {padding:23px 15px 27px}
+  .influence-panel .influence-title {font-size:25px;letter-spacing:-.6px}
+  .influence-panel .influence-deck {font-size:12px}
+  .influence-chart {padding:17px 13px}
+  .influence-chart-heading,.influence-chart-description {margin-left:4px;margin-right:4px}
+  .influence-chart-heading h2,.influence-section-heading h2 {font-size:16px}
+  .influence-chart-description {font-size:10px}
+  .influence-domain-list {grid-template-columns:1fr;gap:2px}
+  .influence-domain {min-height:38px}
+  .influence-node-card {padding:16px 14px}
+  .influence-node-domain {font-size:8px}
+  .influence-card-title {font-size:15px}
+  .influence-filter-select {font-size:10px}
+  .influence-supplementary .influence-section-heading {align-items:flex-start;flex-direction:column;gap:7px}
+  .influence-supplementary-badge {font-size:9px}
+  .influence-unit {display:inline}
+}
+@keyframes influence-bar-reveal {from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce) {
+  .influence-mechanism-fill {animation:none}
+  .influence-mechanism,.influence-node-card {transition:none}
+}

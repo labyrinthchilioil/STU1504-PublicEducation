@@ -9,6 +9,7 @@ import { clearSpiderHighlights, highlightSpiderText } from './spider-highlights.
 import { formatNodeTitle } from './node-label.js';
 import { withNodeCodes } from './node-codes.js';
 import { INSPECTOR_SECTION_ORDER, cleanInspectorBlock, inspectorBlockSignature } from './inspector-content.js';
+import { createInfluenceAnalysis } from './influence-analysis.js';
 
 const $ = (id) => document.getElementById(id);
 let data, graph, nodeMap, edgeMap, searchType = 'nodes', selectedNode = null, selectedConnection = null;
@@ -16,11 +17,13 @@ let lastTrigger = null, labelsVisible = true;
 let currentRegion = 'all', layoutMode = false;
 let currentView = 'diagram', landscape, landscapeModel, selectedTopics = [];
 let publicInfluenceEnabled = false, publicInfluenceIds = [];
+let influenceAnalysis, influenceData, influenceRequest, influenceEntry = null, influenceSupplementary = false;
+let navigationRevision = 0;
 let overviewTransition = null;
 let spiderSearch, spiderCompanion, spiderResult = null, spiderTimer, spiderReadyTimer;
 let spiderComposing = false;
 let spiderResultsOpen = false;
-const activeGraph = () => currentView === 'landscape' ? landscape : graph;
+const activeGraph = () => currentView === 'influence' ? null : currentView === 'landscape' ? landscape : graph;
 let regionMap = new Map();
 const regionForItem = item => regionMap.get(String(item.node_id || item.item_id));
 const viewNames = { all:'Overview', land:'Land Use', grid:'Grid', environment:'Environment', operation:'Operation' };
@@ -165,7 +168,7 @@ function clearSpiderQuery({ focus = false } = {}) {
 }
 function submitSpiderQuery() {
   clearTimeout(spiderTimer);
-  if (!spiderSearch || spiderComposing || overviewTransition) return;
+  if (!spiderSearch || spiderComposing || overviewTransition || currentView === 'influence') return;
   clearPublicInfluence();
   if (layoutMode) setLayoutEditing(false);
   if (!$('index-panel').hidden) toggleIndex(false);
@@ -183,6 +186,11 @@ function setTheme(theme) {
   try { localStorage.setItem('frame12-theme',selected); } catch { /* Theme remains usable without storage. */ }
 }
 function viewContext(selection = null) {
+  if (currentView === 'influence') {
+    $('view-name').textContent = 'Public Influence';
+    $('selection-summary').textContent = selection || 'Participation, Access & Decision Authority';
+    return;
+  }
   $('view-name').textContent = currentView === 'landscape' ? 'Network Lenses' : viewNames[currentRegion];
   const publicCount = publicInfluenceIds.filter(id => currentRegion === 'all' || regionMap.get(id) === currentRegion).length;
   const publicSummary = currentRegion === 'all' ? `${publicCount} Public Influence nodes` : `${publicCount} in this section · ${publicInfluenceIds.length} Public Influence nodes`;
@@ -196,6 +204,13 @@ function sourceLink(url, label = 'View original item in Miro ↗') {
 }
 function setHash(kind, id) {
   const params = new URLSearchParams();
+  if (currentView === 'influence') {
+    params.set('view', 'influence');
+    if (influenceEntry) {
+      params.set('entry', influenceEntry);
+      if (influenceSupplementary) params.set('path', 'supplementary');
+    }
+  }
   if (currentView === 'landscape') {
     params.set('view', 'landscape');
     if (selectedTopics.length) params.set('topics', selectedTopics.join(','));
@@ -263,7 +278,14 @@ function openNode(node, { focus = false, keyboard = false } = {}) {
   content.append(sourceLink(node.source_url));
   highlightSpiderInspector();
   activeGraph().setSelection(node.node_id, null); setHash('node', node.node_id);
-  if (focus) requestAnimationFrame(() => { activeGraph().resize(); activeGraph().focusNode(node.node_id); });
+  if (focus) {
+    const renderer = activeGraph();
+    requestAnimationFrame(() => {
+      if (renderer && renderer === activeGraph() && selectedNode === node.node_id) {
+        renderer.resize(); renderer.focusNode(node.node_id);
+      }
+    });
+  }
   if (keyboard) $('close-inspector').focus({ preventScroll: true });
   announce(`Selected ${formatNodeTitle(node.node_text)}`);
 }
@@ -284,7 +306,12 @@ function openConnection(edge, { focus = false, keyboard = false } = {}) {
   content.append(sourceLink(edge.source_url));
   activeGraph().setSelection(null, edge.connection_id); setHash('connection', edge.connection_id);
   if (focus) {
-    requestAnimationFrame(() => { activeGraph().resize(); activeGraph().focusConnection(edge.connection_id); });
+    const renderer = activeGraph();
+    requestAnimationFrame(() => {
+      if (renderer && renderer === activeGraph() && selectedConnection === edge.connection_id) {
+        renderer.resize(); renderer.focusConnection(edge.connection_id);
+      }
+    });
   }
   if (keyboard) $('close-inspector').focus({ preventScroll: true });
   announce(`Selected connection from ${nodeMap.get(edge.start_node_id).display_code || 'source node'} to ${nodeMap.get(edge.end_node_id).display_code || 'destination node'}`);
@@ -299,11 +326,14 @@ function openNote(note) {
 }
 function closeInspector({ restoreFocus = true } = {}) {
   $('inspector').hidden = true; $('canvas-caption').hidden = false;
+  influenceEntry = null; influenceSupplementary = false;
+  influenceAnalysis?.clearSelection();
   selectedNode = null; selectedConnection = null; activeGraph()?.setSelection(null,null); setHash('',null);
   viewContext();
   if (restoreFocus && lastTrigger?.isConnected && lastTrigger !== document.body && !lastTrigger.closest('[hidden]')) lastTrigger.focus({ preventScroll:true });
 }
 function toggleIndex(open = $('index-panel').hidden) {
+  if (currentView === 'influence') { influenceAnalysis?.focusSearch(); return; }
   if (overviewTransition) cancelOverviewTransition();
   if (open) clearPublicInfluence();
   $('index-panel').hidden = !open; $('index-button').setAttribute('aria-expanded', String(open));
@@ -320,7 +350,7 @@ function renderSearch() {
     return text.toLocaleLowerCase().includes(q);
   });
   const box = $('search-results'); box.replaceChildren();
-  $('result-count').textContent = `${found.length} ${searchType === 'nodes' ? 'nodes' : 'connections'}${q ? ' found' : ' in Frame 12'}`;
+  $('result-count').textContent = `${found.length} ${searchType === 'nodes' ? 'nodes' : 'connections'}${q ? ' found' : ' in the diagram'}`;
   if (!found.length) box.append(element('p', 'empty-results', 'No matching items. Try a node code, label or source ID.'));
   for (const row of found) {
     const button = element('button','result-button');
@@ -388,6 +418,7 @@ function updateLayoutControls(state) {
   document.querySelector('.map-footer > span').textContent = state.dirty ? (state.storageAvailable ? 'Custom layout · Saved locally' : 'Custom layout · This session') : 'Original source layout';
 }
 function setView(view, { fromTransition = false } = {}) {
+  navigationRevision++;
   if (!fromTransition) cancelOverviewTransition();
   if (!graph || view === currentView) return;
   if (layoutMode) setLayoutEditing(false);
@@ -397,35 +428,153 @@ function setView(view, { fromTransition = false } = {}) {
   currentView = view;
   spiderResultsOpen = false;
   const isLandscape = view === 'landscape';
+  const isInfluence = view === 'influence';
+  const isDiagram = view === 'diagram';
   $('main').dataset.view = view;
-  $('diagram-wrap').hidden = isLandscape;
+  $('diagram-wrap').hidden = !isDiagram;
   $('landscape-panel').hidden = !isLandscape;
-  $('edit-layout').hidden = isLandscape;
-  $('overview-discover').hidden = isLandscape;
+  $('influence-panel').hidden = !isInfluence;
+  $('edit-layout').hidden = !isDiagram;
+  $('overview-discover').hidden = !isDiagram;
   $('landscape-reset').hidden = !isLandscape;
   $('landscape-overview').hidden = !isLandscape;
-  $('routing-note').hidden = isLandscape;
+  $('routing-note').hidden = !isDiagram;
+  $('index-button').hidden = isInfluence;
+  $('labels-toggle').hidden = isInfluence;
+  $('spider-dock').hidden = isInfluence;
+  document.querySelector('.map-controls').hidden = isInfluence;
   $('labels-toggle').setAttribute('aria-label', isLandscape ? 'Show node labels' : 'Show connection labels');
   $('labels-toggle').title = isLandscape ? 'Node Labels' : 'Connection Labels';
-  document.querySelector('.skip-link').href = isLandscape ? '#landscape-diagram' : '#diagram';
+  document.querySelector('.skip-link').href = isInfluence ? '#influence-panel' : isLandscape ? '#landscape-diagram' : '#diagram';
   if (isLandscape && !landscape) initializeLandscape();
-  graph.setActive(!isLandscape);
+  if (isInfluence) initializeInfluence();
+  graph.setActive(isDiagram);
   landscape?.setActive(isLandscape);
-  activeGraph().setLabelsVisible(labelsVisible);
+  activeGraph()?.setLabelsVisible(labelsVisible);
   document.querySelectorAll('[data-region]').forEach(button => {
-    const active = !isLandscape && button.dataset.region === currentRegion;
+    const active = isDiagram && button.dataset.region === currentRegion;
     button.classList.toggle('active', active);
     if (active) button.setAttribute('aria-current', 'true'); else button.removeAttribute('aria-current');
   });
   $('landscape-button').classList.toggle('active', isLandscape);
   if (isLandscape) $('landscape-button').setAttribute('aria-current', 'true');
   else $('landscape-button').removeAttribute('aria-current');
+  $('influence-button').classList.toggle('active', isInfluence);
+  if (isInfluence) $('influence-button').setAttribute('aria-current', 'true');
+  else $('influence-button').removeAttribute('aria-current');
   updateViewFooter();
   viewContext();
   setHash('', null);
-  applySpiderResult();
+  if (!isInfluence) applySpiderResult();
+  else { clearTimeout(spiderTimer); clearTimeout(spiderReadyTimer); updateSpiderTether(); }
   updatePublicInfluence();
-  requestAnimationFrame(() => { activeGraph().resize(); updateSpiderTether(); });
+  requestAnimationFrame(() => { activeGraph()?.resize(); updateSpiderTether(); });
+}
+async function initializeInfluence() {
+  if (influenceData) return influenceData;
+  if (influenceRequest) return influenceRequest;
+  const panel = $('influence-panel');
+  panel.replaceChildren(element('p', 'influence-loading', 'Loading participation pathways…'));
+  influenceRequest = (async () => {
+    try {
+      const response = await fetch('data/public-influence.json');
+      if (!response.ok) throw new Error(`Analysis data returned ${response.status}`);
+      influenceData = await response.json();
+      influenceAnalysis = createInfluenceAnalysis(panel, {
+        regionMap,
+        onSelect: openInfluenceEntry,
+        onOpenGraph: openInfluenceGraph,
+        onFilterChange: () => {
+          if (currentView === 'influence') closeInspector({ restoreFocus: false });
+        },
+      });
+      influenceAnalysis.load(influenceData);
+      return influenceData;
+    } catch (error) {
+      influenceData = null;
+      const retry = element('button', 'endpoint-link', 'Retry Loading');
+      retry.addEventListener('click', () => initializeInfluence());
+      panel.replaceChildren(element('p', 'influence-loading', 'The analysis could not be loaded. Your diagram is still available.'), retry);
+      console.error(error);
+      return null;
+    } finally { influenceRequest = null; }
+  })();
+  return influenceRequest;
+}
+function openInfluenceGraph(record) {
+  const node = nodeMap.get(record.nodeId);
+  if (!node) return;
+  focusRegion('all');
+  openNode(node, { focus: true, keyboard: true });
+}
+function openInfluenceEntry(record, { supplementary = false } = {}) {
+  if (currentView !== 'influence') return;
+  lastTrigger = document.activeElement;
+  influenceEntry = record.code;
+  influenceSupplementary = supplementary;
+  influenceAnalysis?.select(record.code, { supplementary });
+  const content = panelHeader(
+    `${supplementary ? 'Supplementary Pathway' : 'Participation Node'} / ${record.code}`,
+    record.title || record.mechanism, regionMap.get(record.nodeId));
+  const fields = supplementary ? [
+    ['Public Action', record.publicAction],
+    ['Eligibility & Decision Authority', record.eligibility],
+    ['Source Treatment', record.sourceTreatment?.replace(/\bFrame\s*12\s+/gi, '')],
+  ] : [
+    ['Public Action', record.publicAction],
+    ['Participation Access', record.participationAccess],
+    ['What Can Be Influenced?', record.influenceTarget],
+    ['Who Convenes Or Initiates?', record.convener],
+    ['Who Decides?', record.decisionAuthority],
+    ['Rights & Limitations', record.rightsLimitations],
+  ];
+  for (const [label, value] of fields) {
+    if (!value) continue;
+    const block = element('section', 'detail-section');
+    block.append(element('h2', '', label), element('p', '', value));
+    content.append(block);
+  }
+  const node = nodeMap.get(record.nodeId);
+  if (!supplementary && record.mechanismId === 'formal') {
+    const routes = element('details', 'connection-list');
+    routes.append(element('summary', '', 'Different Participation Statuses'));
+    const explanation = element('section', 'detail-section');
+    const mechanism = influenceData.mechanisms.find(item => item.id === 'formal');
+    explanation.append(element('p', '', mechanism.interpretation));
+    const list = element('ul');
+    for (const route of record.publicAction.split(' / ')) list.append(element('li', '', route[0].toUpperCase() + route.slice(1)));
+    explanation.append(list);
+    routes.append(explanation);
+    content.append(routes);
+  }
+  if (!supplementary) {
+    const original = section('Public Influence', node?.sections['Public Influence'] || []);
+    if (original) {
+      const details = element('details', 'connection-list');
+      details.append(element('summary', '', 'Original Participation Notes'), original);
+      content.append(details);
+    }
+  }
+  const links = record.evidenceLinks || [];
+  if (links.length) {
+    const evidence = element('section', 'detail-section');
+    evidence.append(element('h2', '', 'Evidence'));
+    for (const link of links) {
+      const p = element('p');
+      p.append(sourceLink(link.url, link.link_label || 'Official Source ↗'));
+      evidence.append(p);
+    }
+    content.append(evidence);
+  }
+  const graphButton = element('button', 'endpoint-link', `View ${record.code} In Explore ↗`);
+  graphButton.type = 'button';
+  graphButton.addEventListener('click', () => openInfluenceGraph(record));
+  content.append(graphButton);
+  if (record.sourceUrl) content.append(sourceLink(record.sourceUrl));
+  viewContext(`${record.code} · ${supplementary ? 'Supplementary Pathway' : record.domain}`);
+  setHash('', null);
+  $('close-inspector').focus({ preventScroll: true });
+  announce(`Selected ${record.code}: ${record.title || record.mechanism}`);
 }
 function initializeLandscape() {
   landscapeModel = createLandscapeModel(data, { regionMap });
@@ -461,7 +610,9 @@ function initializeLandscape() {
   new ResizeObserver(() => { if (currentView === 'landscape') landscape.resize(); }).observe($('landscape-stage'));
 }
 function updateViewFooter() {
-  if (currentView === 'landscape') {
+  if (currentView === 'influence') {
+    document.querySelector('.map-footer > span').textContent = 'Public Influence Analysis';
+  } else if (currentView === 'landscape') {
     const inferred = $('landscape-inferred').checked ? landscapeModel.inferredEdges.length : 0;
     document.querySelector('.map-footer > span').textContent = `${data.connections.length} source connections · ${inferred} related links · Drag to explore`;
   } else {
@@ -739,11 +890,20 @@ async function untangleToDiscover() {
     }
   }
 }
-function navigateHash() {
+async function navigateHash() {
   const params = new URLSearchParams(location.hash.slice(1));
   cancelOverviewTransition();
   closeInspector();
-  setView(params.get('view') === 'landscape' ? 'landscape' : 'diagram');
+  setView(['landscape', 'influence'].includes(params.get('view')) ? params.get('view') : 'diagram');
+  if (currentView === 'influence') {
+    const revision = navigationRevision;
+    await initializeInfluence();
+    if (currentView !== 'influence' || revision !== navigationRevision || !influenceData) return;
+    const supplementary = params.get('path') === 'supplementary';
+    const entry = (supplementary ? influenceData.supplementary : influenceData.nodes).find(row => row.code === params.get('entry'));
+    if (entry) openInfluenceEntry(entry, { supplementary });
+    return;
+  }
   if (currentView === 'landscape') setTopics((params.get('topics') || '').split(',').filter(Boolean));
   if (nodeMap.has(params.get('node'))) openNode(nodeMap.get(params.get('node')),{focus:true});
   else if (edgeMap.has(params.get('connection'))) openConnection(edgeMap.get(params.get('connection')),{focus:true});
@@ -754,6 +914,11 @@ function navigateHash() {
 }
 
 $('index-button').addEventListener('click',()=>toggleIndex()); $('close-index').addEventListener('click',()=>toggleIndex(false));
+document.querySelector('.skip-link').addEventListener('click', event => {
+  const target = currentView === 'influence' ? $('influence-panel') : currentView === 'landscape' ? $('landscape-diagram') : $('diagram');
+  event.preventDefault();
+  target.focus({ preventScroll: true });
+});
 $('spider-form').addEventListener('submit', event => { event.preventDefault(); submitSpiderQuery(); });
 $('spider-clear').addEventListener('click', () => clearSpiderQuery({ focus: true }));
 $('spider-results-toggle').addEventListener('click', () => {
@@ -796,6 +961,7 @@ $('zoom-in').addEventListener('click',()=>activeGraph()?.zoomBy(1.4)); $('zoom-o
 $('fit-button').addEventListener('click',()=>currentView === 'landscape' ? landscape.fit() : focusRegion('all'));
 $('labels-toggle').addEventListener('click',()=>{labelsVisible=!labelsVisible;$('labels-toggle').setAttribute('aria-pressed',String(labelsVisible));activeGraph()?.setLabelsVisible(labelsVisible);});
 $('landscape-button').addEventListener('click', () => setView('landscape'));
+$('influence-button').addEventListener('click', () => setView('influence'));
 $('landscape-overview').addEventListener('click', untangleToOverview);
 $('overview-discover').addEventListener('click', untangleToDiscover);
 $('public-influence-toggle').addEventListener('click', togglePublicInfluence);
@@ -824,6 +990,13 @@ document.addEventListener('keydown',event=>{
     return;
   }
   if ($('source-dialog').open || $('landscape-method-dialog').open) return;
+  if (currentView === 'influence') {
+    if (event.key === 'Escape' && !$('inspector').hidden) closeInspector();
+    if (event.key === '/' && !event.target.matches('input,textarea,select,[contenteditable=true]')) {
+      event.preventDefault(); influenceAnalysis?.focusSearch();
+    }
+    return;
+  }
   const typing = event.target instanceof Element && event.target.matches('input,textarea,[contenteditable=true]');
   if (layoutMode && !typing && (event.ctrlKey || event.metaKey) && ['z','y'].includes(event.key.toLowerCase())) {
     event.preventDefault(); if (event.key.toLowerCase()==='y' || event.shiftKey) graph.redo(); else graph.undo(); return;
@@ -868,7 +1041,7 @@ try {
   new ResizeObserver(updateSpiderTether).observe($('spider-dock'));
   new ResizeObserver(()=>{ if (currentView === 'diagram') graph.resize(); }).observe($('diagram-wrap'));
   $('loading-state').hidden=true; graph.fit(); navigateHash();
-  announce(`Frame 12 loaded: ${data.nodes.length} nodes and ${data.connections.length} connections.`);
+  announce(`Diagram loaded: ${data.nodes.length} nodes and ${data.connections.length} connections.`);
 } catch (error) {
   $('loading-state').replaceChildren(element('p','','The diagram could not be loaded.'),element('p','','Run the local server and reload this page.'),element('p','',error.message));
   console.error(error);

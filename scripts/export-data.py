@@ -45,7 +45,7 @@ def write_json(path, value):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--workbook", type=Path, default=ROOT / "Frame12_Database.xlsx")
+    parser.add_argument("--workbook", type=Path, default=ROOT / "database/Frame12_Database.xlsx")
     parser.add_argument("--source-svg", type=Path, default=ROOT / "source/miro-frame12.svg")
     parser.add_argument("--output", type=Path, default=ROOT / "web/data")
     args = parser.parse_args()

@@ -90,6 +90,25 @@ References: [GitHub Pages plan eligibility](https://docs.github.com/en/pages/get
 [GitHub Actions publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site),
 [custom deployment workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
+## Public Influence Analysis
+
+The separate **Analyze → Public Influence** view reads
+`database/Frame12_Public_Influence_Visualization_Database.xlsx`, exported to
+`web/data/public-influence.json`. It presents the five source mechanism counts
+(20, 1, 3, 1, 6), filters the 31 annotated nodes by mechanism, domain and search,
+and shows public actions, access, influence targets, conveners, decision authorities
+and limitations. These are node counts, not scores of public power or success.
+
+Three supplementary pathways are displayed separately from the 31-node total.
+Original node IDs and evidence links stay intact; each detail panel can open the
+corresponding node in Explore. Analysis links use `#view=influence`, with
+`entry=CODE` and optional `path=supplementary` for a selected record.
+
+Both source workbooks now live in `database/`. Run `npm run export` after changing
+either workbook, then `npm run check` and `npm run check:influence`. The influence
+check verifies the export against the workbook, counts, graph joins and evidence
+ownership. The Pages build publishes the committed JSON, not the Excel files.
+
 ## Explore
 
 - Drag the diagram to pan; use the wheel or `+` / `−` to zoom. Mouse/touch interaction does not add a canvas focus frame; keyboard Tab focus retains an accent outline.

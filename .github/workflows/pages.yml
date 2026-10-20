@@ -35,6 +35,7 @@ jobs:
           node scripts/spider-search-check.mjs
           node scripts/node-label-check.mjs
           node scripts/inspector-content-check.mjs
+          node scripts/influence-check.mjs
       - name: Build static site
         run: npm run build
       - name: Upload website only
